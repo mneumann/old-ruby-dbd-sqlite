@@ -129,8 +129,4 @@ class TC_SQLite < Test::Unit::TestCase
     }
   end
   
-  def test_last_insert_rowid
-    
-  end
-  
 end
