@@ -86,9 +86,15 @@ class TC_SQLite < Test::Unit::TestCase
   def test_insert_update
     @dbh.do("DROP TABLE sequences") rescue nil
     
-    assert_equal(0, @dbh.do("create table sequences (name varchar(30), val integer)"))
-    
+    assert_equal(0,
+      @dbh.do("create table sequences (id INTEGER PRIMARY KEY,
+                                       name VARCHAR(30),
+                                       val INTEGER)"
+      )
+    )
+
     sth = @dbh.execute("insert into sequences (name,val) values ('test',1000)")
+    assert_equal(1, @dbh.func(:last_insert_rowid));
     assert_equal(1, sth.rows)
     assert_equal(nil, sth.fetch)
     sth.finish
@@ -121,6 +127,10 @@ class TC_SQLite < Test::Unit::TestCase
     assert_raises(DBI::DatabaseError) {
       @dbh.execute("SELECT 1; SELECT 2; SELECT 3").finish
     }
+  end
+  
+  def test_last_insert_rowid
+    
   end
   
 end

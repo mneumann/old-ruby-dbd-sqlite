@@ -315,6 +315,18 @@ Database_rollback(VALUE self)
 }
 
 static VALUE
+Database_last_insert_rowid(int argc, VALUE *argv, VALUE self)
+{
+  int state;
+  struct sDatabase *db;
+
+  Data_Get_Struct(self, struct sDatabase, db);
+  state = sqlite_last_insert_rowid(db->conn);
+
+  return INT2FIX(state);
+}
+
+static VALUE
 Database_do(int argc, VALUE *argv, VALUE self)
 {
   /* argv[0]         = stmt
@@ -830,6 +842,7 @@ void Init_SQLite() {
   rb_define_method(cDatabase, "[]",         Database_aref, 1);
   rb_define_method(cDatabase, "[]=",        Database_aset, 2);
   rb_define_method(cDatabase, "columns",    Database_columns, 1);
+  rb_define_method(cDatabase, "__last_insert_rowid", Database_last_insert_rowid, -1);
 
   rb_include_module(cDatabase, rb_eval_string("DBI::SQL::BasicBind"));
 
